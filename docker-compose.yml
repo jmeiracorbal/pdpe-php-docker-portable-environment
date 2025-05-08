@@ -1,0 +1,38 @@
+services:
+
+  # For dev environment, create from docker compose or devcontainer.json
+  web:
+    build:
+      context: .
+      dockerfile: etc/docker/php83-apache/Dockerfile
+      target: development
+    ports:
+      - "${APACHE_PORT_RANGE}:${APACHE_PORT_RANGE}"
+    volumes:
+      - ./htdocs:/var/www/html
+    restart: unless-stopped
+
+  # Production environment (using "prod" profile) not bind the volume for htdocs (add from stacks)
+  web-prod:
+    build:
+      context: .
+      dockerfile: etc/docker/php83-apache/Dockerfile
+      target: production
+    ports:
+      - "${APACHE_PORT_RANGE}:${APACHE_PORT_RANGE}"
+    restart: unless-stopped
+    profiles: ["prod"]
+
+  # Dashboard (Always enable, prod or dev on port 19874 unless you change the first port, makes internal proxy to 3001, where is the default port for dashdot)
+  dashboard:
+    image: nicolargo/glances
+    container_name: pdpe-dashboard
+    restart: unless-stopped
+    privileged: true
+    expose:
+      - "61208"
+    environment:
+      - GLANCES_OPT=-w
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/os-release:/etc/os-release:ro

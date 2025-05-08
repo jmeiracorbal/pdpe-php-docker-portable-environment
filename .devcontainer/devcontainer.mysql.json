@@ -1,0 +1,16 @@
+{
+  "name": "PHP-8.3 MySQL Dev Environment with PHPMyAdmin",
+  "dockerComposeFile": [
+    "../etc/docker/stacks/development/docker-compose.yml",
+    "../etc/docker/stacks/development/docker-compose.override.mysql.yml"
+  ],
+  "service": "web",
+  "workspaceFolder": "/var/www/html",
+  "shutdownAction": "stopCompose",
+  "runServices": ["web", "mysql", "phpmyadmin"],
+  "postCreateCommand": "[ -f composer.json ] && composer install || echo 'composer.json not found, ignore composer install.'",
+  "remoteUser": "root",
+  "mounts": [
+    "source=${localWorkspaceFolder}/htdocs,target=/var/www/html,type=bind,consistency=cached"
+  ]
+}

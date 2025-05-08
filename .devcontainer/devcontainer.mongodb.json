@@ -1,0 +1,16 @@
+{
+  "name": "PHP-8.3 MongoDB Dev Environment with MongoExpress",
+  "dockerComposeFile": [
+    "../etc/docker/stacks/development/docker-compose.yml",
+    "../etc/docker/stacks/development/docker-compose.override.mongo.yml"
+  ],
+  "service": "web",
+  "workspaceFolder": "/var/www/html",
+  "shutdownAction": "stopCompose",
+  "runServices": ["web", "mongo", "mongo-express"],
+  "postCreateCommand": "[ -f composer.json ] && composer install || echo 'composer.json not found, ignore composer install.'",
+  "remoteUser": "root",
+  "mounts": [
+    "source=${localWorkspaceFolder}/htdocs,target=/var/www/html,type=bind,consistency=cached"
+  ]
+}

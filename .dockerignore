@@ -1,0 +1,42 @@
+# Archivos y carpetas del sistema
+.DS_Store
+Thumbs.db
+
+# VCS
+.git
+.gitignore
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# DevContainer
+.devcontainer/devcontainer.json
+.devcontainer/
+
+# Docker
+docker-compose.override.yml
+Dockerfile
+.dockerignore
+
+# Logs
+*.log
+
+# Composer y PHP (generated into container)
+vendor/
+composer.lock
+
+# Node/npm (por si se mezcla front)
+node_modules/
+npm-debug.log
+yarn.lock
+
+# Webapp generado
+webapp/storage/
+webapp/logs/
+webapp/cache/
+
+# Otros
+*.swp
+*.bak
