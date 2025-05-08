@@ -3,7 +3,6 @@
 [![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)](https://www.docker.com/)
 [![PHP](https://img.shields.io/badge/PHP-8.3-blueviolet?logo=php)](https://www.php.net/)
 [![DevContainer](https://img.shields.io/badge/DevContainer-supported-2ea44f?logo=visualstudiocode)](https://containers.dev/)
-[![License](https://img.shields.io/github/license/USER/REPO.svg)](LICENSE)
 [![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen.svg)](#)
 [![Status](https://img.shields.io/badge/status-active-success)](#)
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
