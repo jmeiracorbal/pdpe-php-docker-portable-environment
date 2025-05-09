@@ -2,7 +2,6 @@
 <img width="304" alt="PDPE (PHP Docker Portable Environment)" height="125" src="./art/logo.png">
 </p>
 
-
 <p align="center">
   <a href="https://www.docker.com/">
     <img src="https://img.shields.io/badge/Docker-ready-blue?logo=docker" alt="Docker">
@@ -21,6 +20,9 @@
   </a>
   <a href="#">
     <img src="https://img.shields.io/badge/status-active-success" alt="Status">
+  </a>
+  <a href="https://github.com/jmeiracorbal/pdpe-php-docker-portable-environment/actions/workflows/ci.yml">
+    <img src="https://github.com/jmeiracorbal/pdpe-php-docker-portable-environment/actions/workflows/publish-docker-image.yml/badge.svg" alt="Build and publish">
   </a>
   <a href="https://opensource.org/licenses/MPL-2.0">
     <img src="https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg" alt="License: MPL-2.0">
@@ -288,6 +290,7 @@ Gracias por el apunte. Aquí tienes el bloque corregido en inglés, con una reda
 If you cloned the repository, you can use the helper script to create new  PHP apps with their Apache vhost config automatically:
 
 By running a single command, you get:
+
 - A new project folder inside htdocs.
 - A matching Apache VirtualHost file under etc/docker/apache2/sites-available using a template (`templates/apache2/sites-available/vhost.conf.template`).
 - An available port automatically assigned from your configured `APACHE_PORT_RANGE`.
@@ -423,13 +426,13 @@ Each application is bound to a dedicated Apache port, avoiding expose unsafe pat
 
 Instead of:
 
-❌ http://localhost:19874/myapp1/public
+- ❌ http://localhost:19874/myapp1/public
 
 You get:
 
-✅ http://localhost:19875 (myapp1)
-✅ http://localhost:19876 (myapi)
-✅ http://localhost:19874 (default dashboard)
+- ✅ http://localhost:19875 (myapp1)
+- ✅ http://localhost:19876 (myapi)
+- ✅ http://localhost:19874 (default dashboard)
 
 All vhosts must declare their port explicitly:
 
