@@ -32,11 +32,6 @@ node_modules/
 npm-debug.log
 yarn.lock
 
-# Webapp generado
-webapp/storage/
-webapp/logs/
-webapp/cache/
-
 # Otros
 *.swp
 *.bak

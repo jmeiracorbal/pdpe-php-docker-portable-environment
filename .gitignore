@@ -2,3 +2,8 @@
 **/vendor
 
 .env
+
+htdocs/*
+!htdocs/.gitkeep
+
+.DS_Store

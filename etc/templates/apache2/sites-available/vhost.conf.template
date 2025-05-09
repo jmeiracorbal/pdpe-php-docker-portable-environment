@@ -1,0 +1,13 @@
+Listen ${PORT}
+<VirtualHost *:${PORT}>
+    ServerName ${PROJECT_NAME}${DOMAIN_SUFFIX}
+    DocumentRoot /var/www/html/${PROJECT_NAME}/public
+
+    <Directory /var/www/html/${PROJECT_NAME}/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/${PROJECT_NAME}_error.log
+    CustomLog ${APACHE_LOG_DIR}/${PROJECT_NAME}_access.log combined
+</VirtualHost>

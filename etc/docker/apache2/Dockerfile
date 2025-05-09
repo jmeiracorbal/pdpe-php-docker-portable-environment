@@ -20,11 +20,13 @@ RUN a2enmod rewrite proxy proxy_http
 # Install composer into container
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Apache config (configured from compose context)
-# Copiar todos los vhosts disponibles
-COPY ./etc/docker/php83-apache/sites-available/*.conf /etc/apache2/sites-available/
+# Copy the dashboard default virtual host config
+COPY ./etc/templates/apache2/sites-available/000-default.conf /etc/apache2/sites-available
 
-# Create symbolyc links automatuically for all .conf files (really into the container)
+# Copy the local generated virtual host config
+COPY ./etc/docker/apache2/sites-available/* /etc/apache2/sites-available
+
+# Create symbolyc links automatically for all .conf files already into the container
 RUN for site in /etc/apache2/sites-available/*.conf; do \
       ln -s "$site" "/etc/apache2/sites-enabled/$(basename $site)"; \
     done
@@ -38,16 +40,17 @@ RUN ln -sf /dev/stdout /var/log/apache2/access.log \
 
 WORKDIR /var/www/html
 
-# Stage 2: Development environment
+# Stage 2: Build development environment
 FROM base AS development
 
-# php-xdebug is not available as apt package on official image of php:8.3-apache
+# php-xdebug is not available as apt package on official image of php:8.3-apache, therefore we need to install it via PECL
 RUN pecl install xdebug \
  && docker-php-ext-enable xdebug
 
 # Configure Xdebug
-# Redundante si instalamos a través de docker-php-ext-enable xdebug
-# RUN echo "zend_extension=xdebug.so" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+# If some day is available via docker-php-ext-enable
+# RUN echo "zend_extension=xdebug.so" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
 RUN echo "xdebug.mode=develop,debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
  && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
  && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
@@ -57,9 +60,6 @@ CMD ["apache2-foreground"]
 
 # Stage 3: Production
 FROM base AS production
-
-# Copy webapp to prevent override the content if exist a public folder on project
-COPY ./webapp/ /var/www/html/
 
 # Setup directory permissions
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html

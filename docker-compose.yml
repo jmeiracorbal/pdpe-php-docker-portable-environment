@@ -4,7 +4,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: etc/docker/php83-apache/Dockerfile
+      dockerfile: etc/docker/apache2/Dockerfile
       target: development
     ports:
       - "${APACHE_PORT_RANGE}:${APACHE_PORT_RANGE}"
@@ -16,7 +16,7 @@ services:
   web-prod:
     build:
       context: .
-      dockerfile: etc/docker/php83-apache/Dockerfile
+      dockerfile: etc/docker/apache2/Dockerfile
       target: production
     ports:
       - "${APACHE_PORT_RANGE}:${APACHE_PORT_RANGE}"
