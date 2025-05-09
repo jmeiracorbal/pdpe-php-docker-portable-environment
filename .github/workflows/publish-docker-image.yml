@@ -29,3 +29,11 @@ jobs:
         run: |
           docker build -f etc/docker/apache2/Dockerfile --target base -t jmeiracorbal/pdpe:latest .
           docker push jmeiracorbal/pdpe:latest
+          
+      - name: Uupdate README on Docker Hub
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: jmeiracorbal/pdpe
+          readme-filepath: ./README.md
