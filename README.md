@@ -1,11 +1,31 @@
-![alt text](logo-pdpe.png "PDPE (PHP Docker Portable Environment)")
+<p align="center">
+<img width="304" alt="PDPE (PHP Docker Portable Environment)" height="125" src="./art/logo.png">
+</p>
 
-[![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)](https://www.docker.com/)
-[![PHP](https://img.shields.io/badge/PHP-8.3-blueviolet?logo=php)](https://www.php.net/)
-[![DevContainer](https://img.shields.io/badge/DevContainer-supported-2ea44f?logo=visualstudiocode)](https://containers.dev/)
-[![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen.svg)](#)
-[![Status](https://img.shields.io/badge/status-active-success)](#)
-[![License: MPL-2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
+
+<p align="center">
+  <a href="https://www.docker.com/">
+    <img src="https://img.shields.io/badge/Docker-ready-blue?logo=docker" alt="Docker">
+  </a>
+  <a href="https://hub.docker.com/r/jmeiracorbal/pdpe">
+    <img src="https://img.shields.io/docker/pulls/jmeiracorbal/pdpe.svg" alt="Docker Image">
+  </a>
+  <a href="https://www.php.net/">
+    <img src="https://img.shields.io/badge/PHP-8.3-blueviolet?logo=php" alt="PHP">
+  </a>
+  <a href="https://containers.dev/">
+    <img src="https://img.shields.io/badge/DevContainer-supported-2ea44f?logo=visualstudiocode" alt="DevContainer">
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/maintained-yes-brightgreen.svg" alt="Maintained">
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/status-active-success" alt="Status">
+  </a>
+  <a href="https://opensource.org/licenses/MPL-2.0">
+    <img src="https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg" alt="License: MPL-2.0">
+  </a>
+</p>
 
 PDPE (PHP Docker Portable Environment) is a fully containerized and extensible environment to build, run, and manage PHP applications using Docker and Apache. 
 It supports DevContainers and offers clean separation between infrastructure and code. Designed for developers who want a multi-project setup with optional stacks like MySQL, MongoDB, and integrated dashboards to monitor resources.
@@ -14,19 +34,32 @@ It supports DevContainers and offers clean separation between infrastructure and
 
 > The PHP version for this project is stablished on php 8.3.
 
-Inspired in Laravel Valet, this project is built as started kid to work with PHP application environment over Apache, designed to support multiple applications within the same container. The structure allows seamless switching between development and production modes, with support for modern development workflows and service integrations (e.g., MySQL, MongoDB).
+Inspired by Laravel Valet, this project is built as a starter kit to work with a PHP application environment over Apache, designed to support multiple applications within the same container. The structure allows seamless switching between development and production modes, with support for modern development workflows and service integrations (e.g., MySQL, MongoDB).
 
-### 🧱 Usage considerations
+## 🧱 Usage considerations
 
 - **Production**: Use this project if your applications are meant to be deployed together or with shared infrastructure. Each app should have a valid reason to coexist in the production stack.
 - **Development**: You can use this environment to host multiple unrelated applications. It’s recommended to simulate a realistic architecture (monorepo, microservices, etc.). If running multiple instances of this environment locally, adjust the exposed ports in the `.env` file to avoid conflicts.
 
 ### 📦 Clone and initialize
 
-💡 Tip: If using this project as a boilerplate, delete the .git folder after cloning to detach it from this repository.
+Clone the repository and build the development environment locally using the compose file:
 
-1. Clone the repository.
-2. Copy the .env.example and rename to .env
+```bash
+git clone https://github.com/jmeiracorbal/pdpe-php-docker-portable-environment.git
+```
+
+```bash
+cd pdpe-php-docker-portable-environment
+```
+
+```bash
+docker compose -f etc/docker/stacks/development/docker-compose.yml up -d
+```
+
+This gives you a full-featured development environment with support for Xdebug, MySQL, and phpMyAdmin. Devcontainers are also supported. Check the other available stacks.
+
+💡 Tip: If using this project as a starter kit, delete the .git folder after cloning to detach it from this repository and copy the .env.example and rename to .env.
 
 🧪 **Launch the environment**
 
@@ -63,25 +96,66 @@ docker compose -f docker-compose.yml -f docker-compose.override.mysql.yml --prof
 docker compose --profile prod up
 ```
 
-🔐 Be sure your htdocs/ contains a valid application structure aligned with host file for apache server conf before building the production image.
+🔐 Be sure your htdocs contains a valid application structure aligned with host file for apache server conf before building the production image.
 
-🧠 **About DevContainer support**
+### 🐳 Use the published image (without cloning the repo)
 
-> This features is on development, you can use under your responsability.
+If you prefer not to clone this repository, you can use the Docker image directly in your own project with a custom docker-compose.yml. 
 
-This project includes full support for DevContainers with:
+This approach is ideal if you want to treat this environment as a service layer and manage your own codebase and configuration separately. 
 
-- Prebuilt definitions in .devcontainer.
-- PhpStorm Remote Development compatibility.
-- Automatic setup: composer install, extensions, xdebug, workspace mounts.
+📁 Minimal folder structure expected:
 
-📎 If your IDE requires a file named `devcontainer.json`, you can symlink any of the variant files:
+```
+pdpe/
+├── .env
+├── docker-compose.yml
+├── htdocs/
+│   └── your-app/
+│       └── public/
+└── apache/
+    └── sites-available/
+        └── your-app.conf
+```
+
+📄 Example docker-compose.yml:
+
+```yaml
+services:
+  web:
+    image: jmeiracorbal/pdpe:latest
+    ports:
+      - "${APACHE_PORT_RANGE}:${APACHE_PORT_RANGE}"
+    volumes:
+      - ./htdocs:/var/www/html
+      - ./apache/sites-available:/etc/apache2/sites-available
+    environment:
+      - XDEBUG_MODE=develop,debug
+      - XDEBUG_CLIENT_HOST=host.docker.internal
+```
+
+You can adjust these paths in the volume mappings, but these are the expected defaults in the official image.
+
+📦 Requirements:
+- Define `APACHE_PORT_RANGE` in your .env file (example 19874-19899).
+- Create your virtual hosts under apache/sites-available.
+- Make sure the internal structure inside htdocs/ follows the convention: each app in its own folder with a public/ entry point.
+
+🧠 **DevContainer support**
+
+This environment includes optional DevContainer definitions located in `.devcontainer` folder, allowing you to open the project directly in VS Code or PhpStorm with remote development features.
+
+- Preconfigured workspace with PHP tools, extensions, and Xdebug
+- Composer install triggered automatically on startup
+- PhpStorm Remote Development and VS Code DevContainers support
+
+📎 If your IDE requires a `devcontainer.json` file in the root (PhpStorm, for example), you can symlink one of the predefined configs:
 
 ```bash
 ln -sf .devcontainer/devcontainer.mysql.json .devcontainer/devcontainer.json
 ```
 
-## 🧱 **Dockerfile: PHP + Apache build**
+## 🧱 **Dockerfile: PHP + Apache**
 
 This project uses a multi-stage Dockerfile to build reusable PHP environments for both development and production.
 
@@ -167,12 +241,12 @@ make
 Select the option that you want to deploy the base environment or variants (MySQL, MongoDB, etc.).
 
 - make up / make down -> only webservice.
-- make up-mysql / make down-mysql -> web + mysql + phpmyadmin.
-- make up-mongo / make down-mongo -> web + mongo + mongo-express.
-- make clean -> down and remove volumes.
-- make destroy -> (⚠️) This removes all your docker content if’s not in use.
+- make up-mysql / make down-mysql: web + mysql + phpmyadmin.
+- make up-mongo / make down-mongo: web + mongo + mongo-express.
+- make clean: down and remove volumes.
+- make destroy: This removes all your docker content if’s not in use.
 
-ℹ️ The dev profile is enabled by default for development-related services. For production deployments, it's recommended to use explicit docker compose commands instead.
+ℹ️ This menu is only intended for development environments and uses the dev profile internally. See Deployment modes for details about profiles.
 
 ## 📁 **Project structure**
 
@@ -193,6 +267,8 @@ This project is organized into separated layers:
 └── .devcontainer/        # DevContainer definitions for various environments
 ```
 
+🔒 Note: Generated apps and vhosts are ignored via .gitignore to avoid tracking local-only changes.
+
 🔹 **Layers purposes**
 
 - etc: Contains all environment and system-level .configuration (Dockerfiles, Apache vhosts, Compose files…).
@@ -207,9 +283,9 @@ All variants rely on the default web service and apply only to the development p
 
 Gracias por el apunte. Aquí tienes el bloque corregido en inglés, con una redacción más natural y adecuada para usuarios desarrolladores, sin sonar artificial ni sobreexplicado:
 
-📦 Script for generate new apps and virtual hosts
+🔌 Script generate new apps and virtual hosts
 
-PDPE includes a helper script to make the creation of new PHP apps with their Apache vhost config.
+If you cloned the repository, you can use the helper script to create new  PHP apps with their Apache vhost config automatically:
 
 By running a single command, you get:
 - A new project folder inside htdocs.
@@ -232,10 +308,6 @@ This creates:
 ```bash
 docker compose down && docker compose up -d --build
 ```
-
-📁 Organizational recomendations: 
-- Use htdocs for active projects.
-- Avoid editing the Dockerfile or Docker Compose—everything is dynamic and config-driven.
 
 ✋ Your custom apps and vhosts won’t be tracked by Git because are ignored on .gitignore rules.
 
