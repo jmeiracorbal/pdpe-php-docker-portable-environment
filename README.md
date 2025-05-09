@@ -14,7 +14,7 @@ It supports DevContainers and offers clean separation between infrastructure and
 
 > The PHP version for this project is stablished on php 8.3.
 
-It is built on Apache and PHP 8.3, and designed to support multiple applications within the same container. The structure allows seamless switching between development and production modes, with support for modern development workflows and service integrations (e.g., MySQL, MongoDB).
+Inspired in Laravel Valet, this project is built as started kid to work with PHP application environment over Apache, designed to support multiple applications within the same container. The structure allows seamless switching between development and production modes, with support for modern development workflows and service integrations (e.g., MySQL, MongoDB).
 
 ### 🧱 Usage considerations
 
@@ -87,7 +87,7 @@ This project uses a multi-stage Dockerfile to build reusable PHP environments fo
 
 🔧 **Base configuration**
 
-_Base image: php:8.3-apache_:
+_Base image php:8.3-apache_:
 - PHP extensions: pdo_mysql, gd, mbstring, bcmath, pcntl, exif.
 - MongoDB support: Installed via pecl install mongodb.
 - Composer: Included from the official Composer image.
@@ -185,7 +185,7 @@ This project is organized into separated layers:
 .
 ├── etc/                  # System infrastructure files
 │   └── docker/
-│       ├── php83-apache/ # Default dockerfile environment configuration
+│       ├── apache2/      # Default dockerfile environment configuration
 │       └── stacks/       # Dockerfiles (e.g., PHP 8.3 + Apache)
 ├── htdocs/               # Root directory for PHP applications
 │   └── myapp/            # Each app has its own subdirectory and public entrypoint
@@ -213,7 +213,7 @@ PDPE includes a helper script to make the creation of new PHP apps with their Ap
 
 By running a single command, you get:
 - A new project folder inside htdocs.
-- A matching Apache VirtualHost file under etc/docker/php83-apache/sites-available using a template (`templates/apache2/sites-available/vhost.conf.template`).
+- A matching Apache VirtualHost file under etc/docker/apache2/sites-available using a template (`templates/apache2/sites-available/vhost.conf.template`).
 - An available port automatically assigned from your configured `APACHE_PORT_RANGE`.
 
 📄 Example usage:
@@ -328,15 +328,9 @@ htdocs/
 │   └── public/
 
 etc/
-└── docker/
-└── stacks/
-└── php83-apache/
 └── apache2/
-├── sites-available/
-│   ├── 000-default.conf
-│   ├── myapp1.conf
-│   └── myapi.conf
-└── sites-enabled/ (auto-generated inside container on build time)
+│   ├── sites-available/
+│   ├── sites-enabled/ (auto-generated inside container on build time)
 ```
 
 ℹ️ sites-enabled only exists inside the container, not on the host.
@@ -346,8 +340,6 @@ etc/
 To avoid modifying the Dockerfile every time you add a new site, vhosts are enabled automatically via symlinks:
 
 ```Dockerfile
-COPY ./etc/docker/stacks/php83-apache/apache2/sites-available/*.conf /etc/apache2/sites-available/
-
 RUN for site in /etc/apache2/sites-available/*.conf; do \
       ln -s "$site" "/etc/apache2/sites-enabled/$(basename $site)"; \
     done
